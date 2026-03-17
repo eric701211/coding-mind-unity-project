@@ -7,7 +7,7 @@ public class Look : MonoBehaviour
     public float sensitivity = 1;
     public float smoothing = 2;
 
-    private Transform charCamera;
+    public Transform charCamera;
     private Vector2 currentMouseLook;
     private Vector2 appliedMouseDelta;
 
