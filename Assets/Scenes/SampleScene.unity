@@ -1310,9 +1310,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4488483936454106370, guid: 6c20ff39a30f54de9b911a9f54ae87c8, type: 3}
+      propertyPath: m_Height
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4488483936454106371, guid: 6c20ff39a30f54de9b911a9f54ae87c8, type: 3}
       propertyPath: m_Name
       value: Zombie
+      objectReference: {fileID: 0}
+    - target: {fileID: 4488483936454106376, guid: 6c20ff39a30f54de9b911a9f54ae87c8, type: 3}
+      propertyPath: m_BaseOffset
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4488483936454106383, guid: 6c20ff39a30f54de9b911a9f54ae87c8, type: 3}
       propertyPath: m_RootOrder
