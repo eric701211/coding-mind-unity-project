@@ -140,6 +140,11 @@ MonoBehaviour:
   attackDistance: 2
   attackDamage: 15
   attackCooldown: 1.5
+  faceTargetTurnSpeed: 8
+  healthDropPrefab: {fileID: 7448485989582181266, guid: b476b2b1c63e84895a2321bc71ad76c0, type: 3}
+  attackHitDelay: 0.5
+  attackHitRange: 0.5
+  attackHitAngle: 90
   animator: {fileID: 164464382862950773}
 --- !u!114 &4488483936454106382
 MonoBehaviour:
@@ -157,6 +162,15 @@ MonoBehaviour:
   animator: {fileID: 164464382862950773}
   agent: {fileID: 0}
   aiScript: {fileID: 4488483936454106377}
+  healthDropPrefab: {fileID: 7448485989582181266, guid: b476b2b1c63e84895a2321bc71ad76c0, type: 3}
+  healthDropChance: 1
+  healthDropGroundOffset: 0.5
+  healthDropRaycastHeight: 2
+  healthDropRaycastDistance: 10
+  healthDropGroundLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  healthDropDelay: 5
 --- !u!1001 &3058628397196879957
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11,6 +11,20 @@ public class ZombieHealth : MonoBehaviour
     public NavMeshAgent agent; 
     public ZombieAI aiScript; 
 
+    [Header("Drops")]
+    public GameObject healthDropPrefab;
+    [Range(0f, 1f)] public float healthDropChance = 1f;
+    [Tooltip("How far above the ground the heart's pivot is placed. Increase if your mesh clips into the floor.")]
+    public float healthDropGroundOffset = 0.5f;
+    [Tooltip("How far above the zombie we start the ground raycast.")]
+    public float healthDropRaycastHeight = 2f;
+    [Tooltip("Max distance the raycast travels to find the ground.")]
+    public float healthDropRaycastDistance = 10f;
+    [Tooltip("Layers that count as ground for placing the drop.")]
+    public LayerMask healthDropGroundLayers = ~0;
+    [Tooltip("How long after death to spawn the drop. Should match the despawn timer.")]
+    public float healthDropDelay = 5f;
+
     private bool isDead = false;
 
     // Notice there are now TWO arguments here: amount and hitDirection
@@ -19,15 +33,16 @@ public class ZombieHealth : MonoBehaviour
         if (isDead) return;
 
         health -= amount;
-        
-        if (animator != null) animator.SetTrigger("Hit"); 
-        
-        StartCoroutine(ApplyKnockback(hitDirection));
 
         if (health <= 0f)
         {
             Die();
+            return;
         }
+
+        if (animator != null) animator.SetTrigger("Hit");
+
+        StartCoroutine(ApplyKnockback(hitDirection));
     }
 
     IEnumerator ApplyKnockback(Vector3 direction)
@@ -51,7 +66,12 @@ public class ZombieHealth : MonoBehaviour
     void Die()
     {
         isDead = true;
-        if (animator != null) animator.SetBool("isDead", true); 
+        StopAllCoroutines();
+        if (animator != null)
+        {
+            animator.ResetTrigger("Hit");
+            animator.SetBool("isDead", true);
+        }
         
         if (agent != null) agent.enabled = false;
         
@@ -60,6 +80,26 @@ public class ZombieHealth : MonoBehaviour
         
         if (aiScript != null) aiScript.enabled = false;
 
-        Destroy(gameObject, 5f);
+        Invoke(nameof(TrySpawnHealthDrop), healthDropDelay);
+        Destroy(gameObject, healthDropDelay + 0.1f);
+    }
+
+    void TrySpawnHealthDrop()
+    {
+        if (healthDropPrefab == null) return;
+        if (Random.value > healthDropChance) return;
+
+        Vector3 spawnPos = GetGroundedSpawnPosition();
+        Instantiate(healthDropPrefab, spawnPos, Quaternion.identity);
+    }
+
+    Vector3 GetGroundedSpawnPosition()
+    {
+        Vector3 origin = transform.position + Vector3.up * healthDropRaycastHeight;
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, healthDropRaycastDistance, healthDropGroundLayers, QueryTriggerInteraction.Ignore))
+        {
+            return hit.point + Vector3.up * healthDropGroundOffset;
+        }
+        return transform.position + Vector3.up * healthDropGroundOffset;
     }
 }
