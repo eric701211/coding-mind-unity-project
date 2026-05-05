@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
     public float health = 100f;
     public float maxHealth = 100f;
     public Text healthText;
+    public GameManager gameManager;
 
     [Header("Damage Feedback")]
     public Image damageOverlay;
@@ -51,6 +52,10 @@ public class PlayerHealth : MonoBehaviour
 
         if (health <= 0f)
         {
+            if (gameManager != null)
+            {
+                gameManager.TriggerGameOver();
+            }
             if (healthText != null) healthText.text = "HP: 0 (DEAD)";
             Debug.Log("Player Died!");
         }
@@ -95,4 +100,14 @@ public class PlayerHealth : MonoBehaviour
     {
         if (healthText != null) healthText.text = "HP: " + health;
     }
+
+    public void Die()
+    {
+    // Your other death logic (playing sound, dropping weapon, etc.)
+    
+    if (gameManager != null)
+    {
+        gameManager.TriggerGameOver();
+    }
+}
 }
