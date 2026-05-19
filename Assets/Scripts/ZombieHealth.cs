@@ -25,6 +25,10 @@ public class ZombieHealth : MonoBehaviour
     [Tooltip("How long after death to spawn the drop. Should match the despawn timer.")]
     public float healthDropDelay = 5f;
 
+    [Header("Animation Settings")]
+    [Tooltip("Adjust this to slow down or speed up the death animation. 1 is normal, 0.5 is half speed.")]
+    public float deathAnimationSpeed = 1f;
+
     private bool isDead = false;
 
     // Notice there are now TWO arguments here: amount and hitDirection
@@ -67,17 +71,39 @@ public class ZombieHealth : MonoBehaviour
     {
         isDead = true;
         StopAllCoroutines();
+
+        if (animator == null) animator = GetComponentInChildren<Animator>();
         if (animator != null)
         {
+            animator.speed = deathAnimationSpeed; // Reset animation speed so it doesn't play too fast/slow
             animator.ResetTrigger("Hit");
             animator.SetBool("isDead", true);
         }
         
-        if (agent != null) agent.enabled = false;
+        if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (agent != null) 
+        {
+            if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+            }
+            agent.enabled = false;
+        }
+        
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true; // Stop physics from sliding the zombie
+        }
         
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
         
+        if (aiScript == null) aiScript = GetComponent<ZombieAI>();
         if (aiScript != null) aiScript.enabled = false;
 
         Invoke(nameof(TrySpawnHealthDrop), healthDropDelay);

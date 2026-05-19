@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ public class Jump : MonoBehaviour
     public KeyCode jumpKey = KeyCode.Space;
 
     private Rigidbody rb;
-    private bool isGrounded = true;
+    private int groundContacts = 0;
 
     void Start()
     {
@@ -18,6 +18,7 @@ public class Jump : MonoBehaviour
 
     void Update()
     {
+        bool isGrounded = groundContacts > 0;
         if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             rb.AddForce(rb.transform.up * jumpStrength, ForceMode.Impulse);
@@ -28,7 +29,7 @@ public class Jump : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            groundContacts++;
         }
     }
 
@@ -36,7 +37,7 @@ public class Jump : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false;
+            groundContacts--;
         }
     }
 }

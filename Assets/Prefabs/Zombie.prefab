@@ -142,6 +142,10 @@ MonoBehaviour:
   attackCooldown: 1.5
   faceTargetTurnSpeed: 8
   healthDropPrefab: {fileID: 7448485989582181266, guid: b476b2b1c63e84895a2321bc71ad76c0, type: 3}
+  chaseSpeed: 5
+  walkAnimationReferenceSpeed: 4.5
+  minAnimationSpeed: 0.5
+  maxAnimationSpeed: 3
   attackHitDelay: 0.5
   attackHitRange: 0.5
   attackHitAngle: 90
@@ -171,6 +175,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   healthDropDelay: 5
+  deathAnimationSpeed: 1
 --- !u!1001 &3058628397196879957
 PrefabInstance:
   m_ObjectHideFlags: 0

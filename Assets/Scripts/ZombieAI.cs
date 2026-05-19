@@ -14,6 +14,10 @@ public class ZombieAI : MonoBehaviour
     [Header("Movement")]
     [Tooltip("How fast the zombie chases the player (NavMeshAgent speed).")]
     public float chaseSpeed = 3.5f;
+    [Tooltip("Distance at which the zombie gets a burst of speed to catch up.")]
+    public float lungeDistance = 6f;
+    [Tooltip("The speed during a lunge.")]
+    public float lungeSpeed = 6.5f;
     [Tooltip("The movement speed the walk animation was authored at. The animator playback speed is scaled so it visually matches the agent's actual speed. For most mixamo-style walk clips ~1.3 works well; tune until the feet don't slide.")]
     public float walkAnimationReferenceSpeed = 1.3f;
     [Tooltip("Clamp how slow/fast the walk animation can play. Prevents jittery extremes.")]
@@ -68,17 +72,22 @@ public class ZombieAI : MonoBehaviour
             FacePlayer();
             AttackPlayer();
         }
-        else if (distanceToPlayer <= detectionRadius)
-        {
-            agent.isStopped = false;
-            agent.speed = chaseSpeed;
-            agent.SetDestination(player.position);
-            animator.SetBool("isChasing", true);
-        }
         else
         {
-            agent.isStopped = true; 
-            animator.SetBool("isChasing", false);
+            agent.isStopped = false;
+            
+            // Give them a burst of speed if they are just out of reach
+            if (distanceToPlayer <= lungeDistance)
+            {
+                agent.speed = lungeSpeed;
+            }
+            else
+            {
+                agent.speed = chaseSpeed;
+            }
+            
+            agent.SetDestination(player.position);
+            animator.SetBool("isChasing", true);
         }
 
         SyncWalkAnimationSpeed();

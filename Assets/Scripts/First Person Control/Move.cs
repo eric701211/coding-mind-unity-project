@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +7,8 @@ public class Move : MonoBehaviour
 {
     public float walkSpeed = 5;
     public float runSpeed = 10;
+    public float backwardSpeed = 3f;
+    public float strafeSpeed = 4f;
     public KeyCode runKey = KeyCode.LeftShift;
 
     private Rigidbody rb;
@@ -16,12 +18,32 @@ public class Move : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    public bool IsRunning()
+    {
+        return Input.GetAxis("Vertical") > 0 && Input.GetKey(runKey);
+    }
+
     void Update()
     {
-        float speed = Input.GetKey(runKey) ? runSpeed : walkSpeed;
+        float verticalAxis = Input.GetAxis("Vertical");
+        float horizontalAxis = Input.GetAxis("Horizontal");
 
-        float inputX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        float inputZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        float currentZSpeed = walkSpeed;
+        if (verticalAxis > 0)
+        {
+            currentZSpeed = Input.GetKey(runKey) ? runSpeed : walkSpeed;
+        }
+        else if (verticalAxis < 0)
+        {
+            // COD style: cannot sprint backwards, walk slower backwards
+            currentZSpeed = backwardSpeed;
+        }
+
+        // Strafe speed for horizontal
+        float currentXSpeed = strafeSpeed;
+
+        float inputX = horizontalAxis * currentXSpeed * Time.deltaTime;
+        float inputZ = verticalAxis * currentZSpeed * Time.deltaTime;
 
         rb.transform.Translate(inputX, 0, inputZ);
     }
