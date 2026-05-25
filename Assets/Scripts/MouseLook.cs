@@ -24,7 +24,7 @@ public class MouseLook : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        Debug.Log("Mouse Y value: " + Input.GetAxis("Mouse Y"));
+        // Debug.Log("Mouse Y value: " + Input.GetAxis("Mouse Y"));
 
         // Calculate the up/down rotation (pitch)
         xRotation -= mouseY;

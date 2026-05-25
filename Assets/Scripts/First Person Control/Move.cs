@@ -9,10 +9,9 @@ public class Move : MonoBehaviour
     public float runSpeed = 10;
     public float backwardSpeed = 3f;
     public float strafeSpeed = 4f;
-    public KeyCode runKey = KeyCode.LeftShift;
+    public KeyCode runKey = KeyCode.LeftShift; 
 
     private Rigidbody rb;
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();

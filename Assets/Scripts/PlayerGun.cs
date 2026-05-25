@@ -75,17 +75,17 @@ public class PlayerGun : MonoBehaviour
     {
         bool isRunning = playerMovement != null && playerMovement.IsRunning();
 
-        if (gunAnimator != null)
-        {
-            // Use your own animation if Animator is assigned
-            gunAnimator.SetBool("isRunning", isRunning);
-        }
-        else
-        {
-            // Procedural run animation (tilt gun down)
-            Quaternion targetRotation = isRunning ? originalRotation * Quaternion.Euler(runTiltAngle, 0, 0) : originalRotation;
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * tiltSpeed);
-        }
+        // if (gunAnimator != null)
+        // {
+        //     // Use your own animation if Animator is assigned
+        //     gunAnimator.SetBool("isRunning", isRunning);
+        // }
+        // else
+        // {
+        //     // Procedural run animation (tilt gun down)
+        //     Quaternion targetRotation = isRunning ? originalRotation * Quaternion.Euler(runTiltAngle, 0, 0) : originalRotation;
+        //     transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * tiltSpeed);
+        // }
 
         if (currentSpread > 0)
         {

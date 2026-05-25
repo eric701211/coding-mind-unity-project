@@ -17,9 +17,14 @@ public class Look : MonoBehaviour
     public float bobAmount = 0.05f;
     public float sprintBobFrequency = 15f;
     public float sprintBobAmount = 0.1f;
+    
+    [Header("Bob Smoothing")]
+    public float bobSmoothness = 10f;
 
     private float bobTimer = 0f;
     private Vector3 defaultCameraPos;
+    private float currentBobAmp = 0f;
+    private float currentBobFreq = 0f;
 
     void Start()
     {
@@ -41,28 +46,34 @@ public class Look : MonoBehaviour
 
         if (enableHeadBob)
         {
-            float inputX = Input.GetAxisRaw("Horizontal");
-            float inputZ = Input.GetAxisRaw("Vertical");
-            bool isMoving = Mathf.Abs(inputX) > 0.1f || Mathf.Abs(inputZ) > 0.1f;
+            // Use smoothed input for better velocity scaling
+            float inputX = Input.GetAxis("Horizontal");
+            float inputZ = Input.GetAxis("Vertical");
+            float speedMultiplier = new Vector2(inputX, inputZ).magnitude;
+            speedMultiplier = Mathf.Clamp01(speedMultiplier);
 
-            if (isMoving)
-            {
-                bool isSprinting = Input.GetKey(KeyCode.LeftShift);
-                float freq = isSprinting ? sprintBobFrequency : bobFrequency;
-                float amp = isSprinting ? sprintBobAmount : bobAmount;
+            bool isSprinting = Input.GetKey(KeyCode.LeftShift) && inputZ > 0;
+            float targetFreq = isSprinting ? sprintBobFrequency : bobFrequency;
+            float targetAmp = isSprinting ? sprintBobAmount : bobAmount;
 
-                bobTimer += Time.deltaTime * freq;
-                charCamera.localPosition = new Vector3(
-                    defaultCameraPos.x + Mathf.Cos(bobTimer / 2f) * amp, 
-                    defaultCameraPos.y + Mathf.Sin(bobTimer) * amp, 
-                    defaultCameraPos.z
-                );
-            }
-            else
+            // Smoothly transition amplitude and frequency
+            currentBobAmp = Mathf.Lerp(currentBobAmp, targetAmp * speedMultiplier, Time.deltaTime * bobSmoothness);
+            currentBobFreq = Mathf.Lerp(currentBobFreq, targetFreq, Time.deltaTime * bobSmoothness);
+
+            if (speedMultiplier > 0.1f)
             {
-                bobTimer = 0f;
-                charCamera.localPosition = Vector3.Lerp(charCamera.localPosition, defaultCameraPos, Time.deltaTime * 10f);
+                bobTimer += Time.deltaTime * currentBobFreq;
             }
+
+            // Calculate bob offsets (Figure-8 movement)
+            float bobX = Mathf.Cos(bobTimer / 2f) * currentBobAmp;
+            float bobY = Mathf.Sin(bobTimer) * currentBobAmp;
+
+            charCamera.localPosition = new Vector3(
+                defaultCameraPos.x + bobX, 
+                defaultCameraPos.y + bobY, 
+                defaultCameraPos.z
+            );
         }
     }
 
